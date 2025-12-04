@@ -1,4 +1,4 @@
-/* Container for the whole page */
+
 .single-product,
 .single-product-fallback {
   display: flex;
@@ -11,7 +11,7 @@
   text-align: center;
 }
 
-/* Product Image */
+
 .product-image img,
 .single-product-fallback img {
   width: 300px;
@@ -24,7 +24,7 @@
   background: #fff;
 }
 
-/* Product Details */
+
 .product-details {
   max-width: 600px;
   width: 100%;
@@ -57,7 +57,7 @@
   margin-bottom: 1rem;
 }
 
-/* Quantity Input */
+
 .product-quantity {
   display: flex;
   align-items: center;
@@ -74,7 +74,7 @@
   text-align: center;
 }
 
-/* Buttons */
+
 .add-to-cart-btn,
 .back-btn {
   background-color: #0077ff;
@@ -92,20 +92,20 @@
   background-color: #005fcc;
 }
 
-/* Fallback message */
+
 .single-product-fallback h2 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
 }
 
-/* Loading text */
+
 .single-product-loading {
   text-align: center;
   margin-top: 5rem;
   font-size: 1.2rem;
 }
 
-/* Dark mode support */
+
 .dark .single-product,
 .dark .single-product-fallback {
   background-color: #1e1e1e;

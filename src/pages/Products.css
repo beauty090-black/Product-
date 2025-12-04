@@ -10,7 +10,7 @@
   font-size: 2rem;
 }
 
-/* Grid Layout */
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -18,7 +18,7 @@
   justify-items: center;
 }
 
-/* Product Card */
+
 .product-card {
   background: #fff;
   padding: 1rem;
@@ -41,7 +41,6 @@
   margin-bottom: 1rem;
 }
 
-/* Title & Price */
 .product-card h2 {
   font-size: 1rem;
   margin-bottom: 0.5rem;
@@ -53,7 +52,7 @@
   margin-bottom: 1rem;
 }
 
-/* View Button */
+
 .product-btn {
   display: inline-block;
   padding: 0.5rem 1rem;
@@ -68,7 +67,7 @@
   background: #005fcc;
 }
 
-/* Dark Mode Support */
+
 .dark .products-page {
   background-color: #1e1e1e;
   color: #f5f5f5;

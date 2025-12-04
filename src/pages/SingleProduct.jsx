@@ -18,7 +18,7 @@ export default function SingleProduct() {
       })
       .catch((err) => {
         console.error(err);
-        setProduct(null); // fallback UI
+        setProduct(null); 
         setLoading(false);
       });
   }, [id]);
@@ -30,7 +30,7 @@ export default function SingleProduct() {
       </div>
     );
 
-  // Fallback UI with placeholder image
+  
   if (!product)
     return (
       <div className="single-product-fallback">
