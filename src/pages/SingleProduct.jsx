@@ -18,15 +18,32 @@ export default function SingleProduct() {
       })
       .catch((err) => {
         console.error(err);
+        setProduct(null); // fallback UI
         setLoading(false);
       });
   }, [id]);
 
   if (loading)
-    return <p style={{ textAlign: "center", marginTop: "2rem" }}>Loading...</p>;
+    return (
+      <div className="single-product-loading">
+        <p>Loading product...</p>
+      </div>
+    );
 
+  // Fallback UI with placeholder image
   if (!product)
-    return <p style={{ textAlign: "center", marginTop: "2rem" }}>Product not found.</p>;
+    return (
+      <div className="single-product-fallback">
+        <img
+          src="https://via.placeholder.com/300x300?text=Product+Not+Available"
+          alt="Product not available"
+        />
+        <h2>Oops! Product not available.</h2>
+        <button onClick={() => navigate("/products")} className="back-btn">
+          Back to Products
+        </button>
+      </div>
+    );
 
   const handleAddToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -46,7 +63,6 @@ export default function SingleProduct() {
       <div className="product-image">
         <img src={product.image} alt={product.title} />
       </div>
-
       <div className="product-details">
         <h1>{product.title}</h1>
         <p className="product-category">{product.category}</p>
