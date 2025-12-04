@@ -1,0 +1,33 @@
+.checkout-success {
+  text-align: center;
+  margin-top: 5rem;
+}
+
+.continue-shopping-btn {
+  display: inline-block;
+  margin-top: 2rem;
+  background: #0077ff;
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.continue-shopping-btn:hover {
+  background: #005fcc;
+}
+
+.dark .checkout-success {
+  color: #f5f5f5;
+}
+
+.dark .continue-shopping-btn {
+  background: #ffa07a;
+  color: #1a1a1a;
+}
+
+.dark .continue-shopping-btn:hover {
+  background: #ff7f50;
+  color: #fff;
+}
