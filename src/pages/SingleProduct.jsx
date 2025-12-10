@@ -15,46 +15,34 @@ export default function SingleProduct() {
   useEffect(() => {
     const fetchProductAndSeller = async () => {
       try {
-       
         const productRes = await axiosInstance.get(`/products/${id}`);
         setProduct(productRes.data);
 
-    
         const usersData = await getUsers();
-        const randomUser = usersData[Math.floor(Math.random() * usersData.length)];
+        const randomUser =
+          usersData[Math.floor(Math.random() * usersData.length)];
         setSeller(randomUser);
-
-        setLoading(false);
       } catch (err) {
         console.error(err);
-        setProduct(null);
+        // Optional: redirect to products if product not found
+        navigate("/products");
+      } finally {
         setLoading(false);
       }
     };
 
     fetchProductAndSeller();
-  }, [id]);
+  }, [id, navigate]);
 
-  if (loading)
+  if (loading) {
     return (
       <div className="single-product-loading">
         <p>Loading product...</p>
       </div>
     );
+  }
 
-  if (!product)
-    return (
-      <div className="single-product-fallback">
-        <img
-          src="https://via.placeholder.com/300x300?text=Product+Not+Available"
-          alt="Product not available"
-        />
-        <h2>Oops! Product not available.</h2>
-        <button onClick={() => navigate("/products")} className="back-btn">
-          Back to Products
-        </button>
-      </div>
-    );
+  if (!product) return null; // simply render nothing if no product
 
   const handleAddToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -101,7 +89,8 @@ export default function SingleProduct() {
           <div className="product-seller">
             <h3>Seller Information</h3>
             <p>
-              <strong>Name:</strong> {seller?.name?.firstname} {seller?.name?.lastname}
+              <strong>Name:</strong> {seller?.name?.firstname}{" "}
+              {seller?.name?.lastname}
             </p>
             <p>
               <strong>Username:</strong> {seller?.username}
@@ -114,8 +103,9 @@ export default function SingleProduct() {
             </p>
             {seller?.address && (
               <p>
-                <strong>Address:</strong> {seller.address?.number} {seller.address?.street},{" "}
-                {seller.address?.city}, {seller.address?.zipcode}
+                <strong>Address:</strong> {seller.address?.number}{" "}
+                {seller.address?.street}, {seller.address?.city},{" "}
+                {seller.address?.zipcode}
               </p>
             )}
           </div>
