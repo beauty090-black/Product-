@@ -6,7 +6,6 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
 
- 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
@@ -32,7 +31,7 @@ export default function Cart() {
       return;
     }
 
-    localStorage.removeItem("cart"); 
+    localStorage.removeItem("cart");
     setCartItems([]);
     navigate("/checkout-success");
   };
@@ -56,23 +55,52 @@ export default function Cart() {
     <div className="cart-page">
       <h1>Your Cart</h1>
       <div className="cart-items">
-        {cartItems.map((item) => (
-          <div className="cart-item" key={item.id}>
-            <img src={item.image} alt={item.title} />
+        {cartItems.map((item, index) => (
+          <div className="cart-item" key={item.id || index}>
+            <img src={item?.image} alt={item?.title} />
             <div className="cart-details">
-              <h2>{item.title}</h2>
-              <p>${item.price}</p>
+              <h2>{item?.title}</h2>
+              <p className="cart-price">${item?.price}</p>
+
               <div className="cart-quantity">
                 <label>Qty:</label>
                 <input
                   type="number"
                   min="1"
-                  value={item.quantity}
+                  value={item?.quantity}
                   onChange={(e) =>
                     handleQuantityChange(item.id, Number(e.target.value))
                   }
                 />
               </div>
+
+              {/* Seller Info */}
+              {item.seller && (
+                <div className="cart-seller">
+                  <h3>Seller Info</h3>
+                  <p>
+                    <strong>Name:</strong> {item.seller?.name?.firstname}{" "}
+                    {item.seller?.name?.lastname}
+                  </p>
+                  <p>
+                    <strong>Username:</strong> {item.seller?.username}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {item.seller?.email}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {item.seller?.phone}
+                  </p>
+                  {item.seller?.address && (
+                    <p>
+                      <strong>Address:</strong> {item.seller.address?.number}{" "}
+                      {item.seller.address?.street}, {item.seller.address?.city},{" "}
+                      {item.seller.address?.zipcode}
+                    </p>
+                  )}
+                </div>
+              )}
+
               <button
                 className="remove-btn"
                 onClick={() => handleRemove(item.id)}
@@ -83,6 +111,7 @@ export default function Cart() {
           </div>
         ))}
       </div>
+
       <div className="cart-total">
         <h2>Total: ${totalPrice.toFixed(2)}</h2>
         <button className="checkout-btn" onClick={handleCheckout}>

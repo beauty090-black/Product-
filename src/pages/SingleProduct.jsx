@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axiosInstance from "../api/axiosConfig";
+import { getUsers } from "../api/users";
 import "../pages/SingleProduct.css";
 
 export default function SingleProduct() {
@@ -8,19 +10,29 @@ export default function SingleProduct() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [seller, setSeller] = useState(null);
 
   useEffect(() => {
-    fetch(`https://fakestoreapi.com/products/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setProduct(data);
+    const fetchProductAndSeller = async () => {
+      try {
+       
+        const productRes = await axiosInstance.get(`/products/${id}`);
+        setProduct(productRes.data);
+
+    
+        const usersData = await getUsers();
+        const randomUser = usersData[Math.floor(Math.random() * usersData.length)];
+        setSeller(randomUser);
+
         setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error(err);
-        setProduct(null); 
+        setProduct(null);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchProductAndSeller();
   }, [id]);
 
   if (loading)
@@ -30,7 +42,6 @@ export default function SingleProduct() {
       </div>
     );
 
-  
   if (!product)
     return (
       <div className="single-product-fallback">
@@ -48,10 +59,12 @@ export default function SingleProduct() {
   const handleAddToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     const existing = cart.find((item) => item.id === product.id);
+    const productWithSeller = { ...product, quantity, seller };
+
     if (existing) {
       existing.quantity += quantity;
     } else {
-      cart.push({ ...product, quantity });
+      cart.push(productWithSeller);
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     alert("Product added to cart!");
@@ -61,13 +74,14 @@ export default function SingleProduct() {
   return (
     <div className="single-product">
       <div className="product-image">
-        <img src={product.image} alt={product.title} />
+        <img src={product?.image} alt={product?.title} />
       </div>
+
       <div className="product-details">
-        <h1>{product.title}</h1>
-        <p className="product-category">{product.category}</p>
-        <p className="product-description">{product.description}</p>
-        <p className="product-price">${product.price}</p>
+        <h1>{product?.title}</h1>
+        <p className="product-category">{product?.category}</p>
+        <p className="product-description">{product?.description}</p>
+        <p className="product-price">${product?.price}</p>
 
         <div className="product-quantity">
           <label>Quantity:</label>
@@ -82,6 +96,30 @@ export default function SingleProduct() {
         <button className="add-to-cart-btn" onClick={handleAddToCart}>
           Add to Cart
         </button>
+
+        {seller && (
+          <div className="product-seller">
+            <h3>Seller Information</h3>
+            <p>
+              <strong>Name:</strong> {seller?.name?.firstname} {seller?.name?.lastname}
+            </p>
+            <p>
+              <strong>Username:</strong> {seller?.username}
+            </p>
+            <p>
+              <strong>Email:</strong> {seller?.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {seller?.phone}
+            </p>
+            {seller?.address && (
+              <p>
+                <strong>Address:</strong> {seller.address?.number} {seller.address?.street},{" "}
+                {seller.address?.city}, {seller.address?.zipcode}
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
