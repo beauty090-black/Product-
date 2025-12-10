@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosConfig";
 import { getUsers } from "../api/users";
@@ -6,7 +6,6 @@ import "../pages/SingleProduct.css";
 
 export default function SingleProduct() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -15,24 +14,34 @@ export default function SingleProduct() {
   useEffect(() => {
     const fetchProductAndSeller = async () => {
       try {
+        // Fetch product
         const productRes = await axiosInstance.get(`/products/${id}`);
-        setProduct(productRes.data);
+        setProduct(productRes.data || null);
 
+        // Fetch users
         const usersData = await getUsers();
-        const randomUser =
-          usersData[Math.floor(Math.random() * usersData.length)];
-        setSeller(randomUser);
+        if (usersData && usersData.length > 0) {
+          const randomUser =
+            usersData[Math.floor(Math.random() * usersData.length)];
+          setSeller(randomUser);
+        }
       } catch (err) {
-        console.error(err);
-        // Optional: redirect to products if product not found
-        navigate("/products");
+        console.error("Error fetching product or users:", err);
+        // fallback product
+        setProduct({
+          title: "Product not available",
+          description: "This product is currently unavailable.",
+          price: "0.00",
+          category: "N/A",
+          image: "https://via.placeholder.com/300x300?text=No+Image",
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchProductAndSeller();
-  }, [id, navigate]);
+  }, [id]);
 
   if (loading) {
     return (
@@ -41,8 +50,6 @@ export default function SingleProduct() {
       </div>
     );
   }
-
-  if (!product) return null; // simply render nothing if no product
 
   const handleAddToCart = () => {
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -54,9 +61,9 @@ export default function SingleProduct() {
     } else {
       cart.push(productWithSeller);
     }
+
     localStorage.setItem("cart", JSON.stringify(cart));
     alert("Product added to cart!");
-    navigate("/cart");
   };
 
   return (
@@ -89,23 +96,23 @@ export default function SingleProduct() {
           <div className="product-seller">
             <h3>Seller Information</h3>
             <p>
-              <strong>Name:</strong> {seller?.name?.firstname}{" "}
-              {seller?.name?.lastname}
+              <strong>Name:</strong> {seller.name?.firstname}{" "}
+              {seller.name?.lastname}
             </p>
             <p>
-              <strong>Username:</strong> {seller?.username}
+              <strong>Username:</strong> {seller.username}
             </p>
             <p>
-              <strong>Email:</strong> {seller?.email}
+              <strong>Email:</strong> {seller.email}
             </p>
             <p>
-              <strong>Phone:</strong> {seller?.phone}
+              <strong>Phone:</strong> {seller.phone}
             </p>
-            {seller?.address && (
+            {seller.address && (
               <p>
-                <strong>Address:</strong> {seller.address?.number}{" "}
-                {seller.address?.street}, {seller.address?.city},{" "}
-                {seller.address?.zipcode}
+                <strong>Address:</strong> {seller.address.number}{" "}
+                {seller.address.street}, {seller.address.city},{" "}
+                {seller.address.zipcode}
               </p>
             )}
           </div>
